@@ -1,0 +1,222 @@
+# ============================================================
+# 【主配置文件】企业级并发与安全示例项目
+#
+# 【配置说明】
+# 1. 本文件包含所有环境通用的配置
+# 2. 环境特定配置在 application-{profile}.yml 中
+# 3. 敏感信息（密码等）应使用环境变量或配置中心
+# ============================================================
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  # 【Tomcat配置】
+  tomcat:
+    # 最大工作线程数
+    # 【为什么设置200】默认值，适合大部分场景
+    # 过大：上下文切换开销大
+    # 过小：并发处理能力不足
+    max-threads: 200
+    # 最小空闲线程数
+    min-spare-threads: 20
+    # 连接队列长度
+    accept-count: 100
+    # 连接超时时间（毫秒）
+    connection-timeout: 20000
+
+spring:
+  application:
+    name: concurrent_impl
+  profiles:
+    # 默认激活开发环境
+    active: dev
+
+  # 【Jackson序列化配置】
+  jackson:
+    # 日期格式
+    date-format: yyyy-MM-dd HH:mm:ss
+    # 时区
+    time-zone: Asia/Shanghai
+    # 序列化时忽略null值
+    default-property-inclusion: non_null
+    # 序列化特性
+    serialization:
+      # 格式化输出
+      indent-output: false
+      # 写入日期为时间戳
+      write-dates-as-timestamps: false
+    deserialization:
+      # 忽略未知属性
+      fail-on-unknown-properties: false
+
+  # 【数据源配置】
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # HikariCP连接池配置
+    hikari:
+      # 连接池名称
+      pool-name: ConcurrentImplHikariPool
+      # 最小空闲连接数
+      minimum-idle: 5
+      # 最大连接数
+      # 【为什么设置20】根据业务并发量和数据库承受能力设置
+      maximum-pool-size: 20
+      # 空闲连接存活时间（毫秒）
+      idle-timeout: 600000
+      # 连接最大存活时间（毫秒）
+      # 【为什么设置1800000】避免使用长时间连接，防止数据库连接被服务端断开
+      max-lifetime: 1800000
+      # 连接超时时间（毫秒）
+      connection-timeout: 30000
+      # 连接测试查询
+      connection-test-query: SELECT 1
+
+  # 【JPA配置】
+  jpa:
+    # 数据库类型
+    database-platform: org.hibernate.dialect.MySQLDialect
+    # DDL策略：none-不执行, create-创建, create-drop-创建并删除, update-更新
+    # 【为什么设置update】开发环境方便，生产环境应设置为none
+    hibernate:
+      ddl-auto: update
+    # 显示SQL
+    show-sql: true
+    # SQL格式化
+    properties:
+      hibernate:
+        format_sql: true
+
+  # 【Redis配置】
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      # 密码（生产环境应使用环境变量）
+      # password: ${REDIS_PASSWORD:}
+      # 数据库索引
+      database: 0
+      # 连接超时
+      timeout: 10000ms
+      # Lettuce连接池配置
+      lettuce:
+        pool:
+          # 最大连接数
+          max-active: 20
+          # 最大空闲连接数
+          max-idle: 10
+          # 最小空闲连接数
+          min-idle: 5
+          # 连接最大阻塞等待时间
+          max-wait: 3000ms
+
+  # 【RabbitMQ配置】
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    # 虚拟主机
+    virtual-host: /
+    # 连接超时
+    connection-timeout: 10000ms
+    # 发送确认
+    publisher-confirm-type: correlated
+    # 返回确认
+    publisher-returns: true
+    # 消费者确认模式
+    listener:
+      simple:
+        # 手动确认
+        acknowledge-mode: manual
+        # 每次从队列获取的消息数量
+        prefetch: 10
+        # 消费者数量
+        concurrency: 1
+        # 最大消费者数量
+        max-concurrency: 5
+        # 重试机制
+        retry:
+          enabled: true
+          # 初始重试间隔
+          initial-interval: 3000ms
+          # 最大重试次数
+          max-attempts: 3
+          # 最大重试间隔
+          max-interval: 10000ms
+          # 重试间隔乘数
+          multiplier: 2
+
+  # 【缓存配置】
+  cache:
+    type: redis
+    redis:
+      # 缓存过期时间
+      time-to-live: 3600000
+      # 使用key前缀
+      use-key-prefix: true
+      key-prefix: "cache:"
+      # 缓存null值
+      cache-null-values: true
+
+# 【MyBatis-Plus配置】（如果使用）
+mybatis-plus:
+  # Mapper XML文件位置
+  mapper-locations: classpath*:/mapper/**/*.xml
+  # 类型别名包
+  type-aliases-package: com.example.concurrent_impl.entity
+  configuration:
+    # 驼峰命名转换
+    map-underscore-to-camel-case: true
+    # 日志实现
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      # 主键策略
+      id-type: auto
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      # 逻辑删除值
+      logic-delete-value: 1
+      # 逻辑未删除值
+      logic-not-delete-value: 0
+
+# 【SpringDoc OpenAPI配置】
+springdoc:
+  api-docs:
+    # API文档路径
+    path: /v3/api-docs
+  swagger-ui:
+    # Swagger UI路径
+    path: /swagger-ui.html
+    # 按标签排序
+    tags-sorter: alpha
+    # 按方法排序
+    operations-sorter: method
+
+# 【Actuator配置】
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露所有端点（生产环境应限制）
+        include: "*"
+  endpoint:
+    health:
+      # 显示详细信息
+      show-details: always
+    # 开启shutdown端点
+    shutdown:
+      enabled: false
+
+# 【日志配置】
+logging:
+  # 日志配置文件
+  config: classpath:logback-spring.xml
+  level:
+    # 项目日志级别
+    com.example.concurrent_impl: debug
+    # Spring框架日志级别
+    org.springframework: info
+    # Hibernate日志级别
+    org.hibernate: info

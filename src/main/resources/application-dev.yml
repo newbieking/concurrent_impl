@@ -1,0 +1,74 @@
+# ============================================================
+# 【开发环境配置】
+#
+# 【配置说明】
+# 1. 本文件包含开发环境特定的配置
+# 2. 敏感信息使用环境变量或默认值
+# 3. 开发环境开启更多调试功能
+# ============================================================
+
+spring:
+  # 【数据源配置】开发环境
+  datasource:
+    url: jdbc:mysql://localhost:3306/concurrent_demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+
+  # 【Redis配置】开发环境
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      # 开发环境可以不设密码
+      # password: ${REDIS_PASSWORD:}
+
+  # 【RabbitMQ配置】开发环境
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+  # 【JPA配置】开发环境
+  jpa:
+    # 开发环境显示SQL
+    show-sql: true
+    hibernate:
+      # 开发环境使用update策略
+      ddl-auto: update
+
+  # 【DevTools配置】
+  devtools:
+    restart:
+      # 开启热部署
+      enabled: true
+      # 排除的文件
+      exclude: static/**,public/**
+
+# 【日志级别】开发环境更详细
+logging:
+  level:
+    # 项目日志级别
+    com.example.concurrent_impl: debug
+    # Spring框架日志级别
+    org.springframework: info
+    # Hibernate日志级别
+    org.hibernate: info
+    # SQL日志级别
+    org.hibernate.SQL: debug
+    # JDBC日志级别
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+# 【开发工具配置】
+springdoc:
+  swagger-ui:
+    # 开发环境默认打开Swagger
+    tags-sorter: alpha
+    operations-sorter: method
+
+# 【自定义配置】
+app:
+  # 是否开启演示模式
+  demo-mode: true
+  # 是否允许重置数据
+  allow-reset-data: true

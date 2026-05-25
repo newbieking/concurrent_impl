@@ -148,6 +148,7 @@ public class SnowflakeIdUtil {
         // 【关键点2】同一毫秒内生成多个ID
         if (currentTimestamp == lastTimestamp) {
             // 序列号+1，并取模
+            // [0, ~(-1L << BITS)]
             sequence = (sequence + 1) & MAX_SEQUENCE;
             // 序列号溢出（超过4096）
             if (sequence == 0) {

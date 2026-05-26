@@ -1,0 +1,78 @@
+# ============================================================
+# 【Seata配置】分布式事务配置
+#
+# 【配置说明】
+# 1. 本文件包含Seata分布式事务的配置
+# 2. 需要部署Seata Server
+# 3. 支持AT、TCC、Saga、XA等模式
+# ============================================================
+
+seata:
+  # 是否启用Seata
+  enabled: true
+  
+  # 应用ID
+  application-id: ${spring.application.name}
+  
+  # 事务组名称
+  tx-service-group: concurrent_impl_tx_group
+  
+  # 服务配置
+  service:
+    # 事务组映射
+    vgroup-mapping:
+      concurrent_impl_tx_group: default
+    # 降级配置
+    grouplist:
+      default: 127.0.0.1:8091
+  
+  # 注册中心配置
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: 127.0.0.1:8848
+      namespace: ""
+      group: SEATA_GROUP
+  
+  # 配置中心
+  config:
+    type: nacos
+    nacos:
+      server-addr: 127.0.0.1:8848
+      namespace: ""
+      group: SEATA_GROUP
+  
+  # 客户端配置
+  client:
+    # RM配置
+    rm:
+      # 异步提交缓冲上限
+      async-commit-buffer-limit: 10000
+      # 全局事务超时时间
+      default-global-transaction-timeout: 60000
+      # 一阶段结果提交检测
+      report-retry-count: 5
+      # 二阶段提交重试次数
+      commit-retry-count: 5
+      # 二阶段回滚重试次数
+      rollback-retry-count: 5
+    
+    # TM配置
+    tm:
+      # 全局事务超时时间
+      default-global-transaction-timeout: 60000
+      # 一阶段全局事务结果上报重试次数
+      commit-retry-count: 5
+      # 一阶段全局事务结果上报重试次数
+      rollback-retry-count: 5
+    
+    # Undo日志配置
+    undo:
+      # 是否开启日志压缩
+      log-serialization: jackson
+      # 日志表名
+      log-table: undo_log
+  
+  # 数据源代理
+  data-source-proxy-mode: AT

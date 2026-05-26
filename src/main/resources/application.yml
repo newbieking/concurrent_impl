@@ -29,8 +29,8 @@ spring:
   application:
     name: concurrent_impl
   profiles:
-    # 默认激活开发环境
-    active: dev
+    # 默认激活开发环境、Redisson配置
+    active: dev,redisson
 
   # 【Jackson序列化配置】
   jackson:

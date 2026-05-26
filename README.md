@@ -294,11 +294,13 @@ mvn spring-boot:run
 ## 🔧 配套文档
 
 - [项目计划文档](PROJECT_PLAN.md) - 详细的项目规划和实现计划
-- [高并发场景文档](docs/01-highconcurrency.md) - 高并发场景详解
-- [业务安全文档](docs/02-businesssecurity.md) - 业务安全场景详解
-- [事务安全文档](docs/03-transactionsafety.md) - 事务安全场景详解
-- [数据一致性文档](docs/04-dataconsistency.md) - 数据一致性场景详解
-- [最佳实践总结](docs/best-practices.md) - 综合最佳实践
+- [开发规范](docs/开发规范.md) - 项目开发规范
+- [架构设计文档](docs/架构设计文档.md) - 系统架构设计
+- [API接口文档](docs/API接口文档.md) - API接口说明
+- [部署文档](docs/部署文档.md) - 部署指南
+- [故障排查指南](docs/故障排查指南.md) - 常见故障排查
+- [最佳实践总结](docs/最佳实践总结.md) - 开发最佳实践
+- [AI提示词文档](docs/AI提示词文档.md) - AI代码生成提示词
 
 ## 🤝 贡献指南
 
